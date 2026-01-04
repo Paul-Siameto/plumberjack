@@ -1,0 +1,104 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply antialiased;
+  }
+  
+  body {
+    @apply text-neutral-900 bg-[var(--bg)];
+    font-feature-settings: 'kern' 1;
+    text-rendering: optimizeLegibility;
+  }
+}
+
+html, body, #root { 
+  height: 100%; 
+  scroll-behavior: smooth;
+}
+
+/* Refined color palette for plumbing theme */
+@layer components {
+  :root {
+    --primary: #0B5FFF;      /* Brighter azure blue */
+    --primary-dark: #083E9E;
+    --accent: #2AA6FF;        /* Sky-blue accent for CTAs */
+    --bg: #f5fbff;           /* Very light blue page background */
+  }
+}
+
+/* Improved primary button - larger, rounded, better focus */
+.btn-primary { 
+  @apply bg-[var(--primary)] text-white px-8 py-4 rounded-lg font-semibold text-base uppercase tracking-wider
+  hover:bg-[var(--primary-dark)] active:bg-[#002244]
+  transition-all duration-300 shadow-md hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-300
+  disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+/* Secondary button - softer hover */
+.btn-secondary {
+  @apply border-2 border-neutral-300 bg-white text-neutral-700 px-8 py-4 rounded-lg font-semibold text-base uppercase tracking-wider
+  hover:bg-neutral-50 hover:border-neutral-400
+  active:bg-neutral-100
+  transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-neutral-300;
+}
+
+/* Accent button - for Add to Cart */
+.btn-accent {
+  @apply bg-[var(--accent)] text-white px-8 py-4 rounded-lg font-semibold text-base uppercase tracking-wider
+  hover:bg-[#56C8FF] active:bg-[#0E86D6]
+  transition-all duration-300 shadow-md hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-sky-300;
+}
+
+.link { 
+  @apply text-[var(--primary)] hover:text-[var(--primary-dark)] font-medium transition-colors underline underline-offset-4;
+}
+
+/* Custom scrollbar - thinner and subtler */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-neutral-100;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-neutral-400 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-neutral-500;
+}
+
+/* Product card - rounded corners, hover add-to-cart */
+.product-card {
+  @apply bg-white border border-neutral-200 rounded-xl overflow-hidden
+  transition-all duration-300 hover:shadow-xl hover:border-neutral-300;
+}
+
+/* Section spacing */
+.section-spacing {
+  @apply py-16 md:py-24;
+}
+
+/* Container */
+.container-custom {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+/* Typography - bolder headings */
+.heading-primary {
+  @apply text-4xl md:text-5xl font-extrabold text-neutral-900 mb-6 tracking-tight;
+}
+
+.heading-secondary {
+  @apply text-3xl md:text-4xl font-bold text-neutral-900 mb-8;
+}
+
+.heading-tertiary {
+  @apply text-2xl font-bold text-neutral-900 mb-6;
+}

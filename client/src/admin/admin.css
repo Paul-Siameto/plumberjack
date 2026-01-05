@@ -1,0 +1,104 @@
+/* ProPlumb Admin CSS (ported from provided admin UI) */
+/* Reset & Base */
+*, *::before, *::after { box-sizing: border-box; }
+
+:root{ --bg-primary:#f5f7fa; --bg-card:#ffffff; --bg-sidebar:#0f172a; --text-primary:#2d3748; --text-secondary:#64748b; --border:#cbd5e1; --shadow:rgba(0,0,0,0.1); --topbar-bg:rgba(255,255,255,0.9); --table-header:#f1f5f9; --table-hover:#f1f5f9; --accent:#fd7e14; }
+
+body.admin { background: var(--bg-primary); color: var(--text-primary); font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+
+.card-bg, .modal-content, .stat-card, .chart-card, .settings-section, .table-container, .products-table-container, .inventory-table-container { background: var(--bg-card); border: 1px solid var(--border); box-shadow: 0 12px 40px var(--shadow); }
+
+/* Layout */
+.admin-wrapper { display:flex; min-height:100vh; }
+.sidebar { width:280px; background:var(--bg-sidebar); color:#e2e8f0; position:fixed; height:100%; overflow-y:auto; z-index:1000; box-shadow:4px 0 20px rgba(0,0,0,0.15); transition:width 0.3s ease; }
+.sidebar-header { padding:2rem 1.5rem; text-align:center; background:linear-gradient(180deg,#1e293b,var(--bg-sidebar)); border-bottom:1px solid #334155; }
+.sidebar-header .logo{ font-size:2rem; font-weight:800; background:linear-gradient(90deg,var(--accent),#ff9f43); -webkit-background-clip:text; -webkit-text-fill-color:transparent; letter-spacing:-1px }
+.sidebar-menu { padding:1rem 0; }
+.menu-item{ display:flex; align-items:center; padding:1rem 1.8rem; transition:all 0.3s; cursor:pointer; color:inherit }
+.menu-item:hover{ background: rgba(253,126,20,0.15); padding-left:2.2rem }
+.menu-item.active{ background: rgba(253,126,20,0.25); border-left:4px solid var(--accent); font-weight:600 }
+.menu-item i{ font-size:1.4rem; margin-right:1.2rem; width:32px; text-align:center }
+.menu-item span{ font-size:1.05rem }
+
+.main-content{ margin-left:280px; width:calc(100% - 280px); padding:2.5rem; transition:all 0.3s }
+.topbar{ background:var(--topbar-bg); padding:1.5rem 2rem; border-radius:20px; box-shadow:0 8px 32px rgba(0,0,0,0.08); display:flex; justify-content:space-between; align-items:center; margin-bottom:2.5rem; backdrop-filter:blur(10px); border:1px solid var(--border); }
+.topbar h1{ font-size:2.2rem; color:var(--text-primary); font-weight:700 }
+.dark-mode-toggle{ display:flex; align-items:center; gap:0.8rem; background:var(--bg-card); padding:0.6rem 1rem; border-radius:50px; cursor:pointer; border:2px solid var(--border); transition:all 0.3s; font-size:1rem }
+.user-info{ display:flex; align-items:center; gap:1rem }
+.user-avatar{ width:50px; height:50px; border-radius:50%; background:linear-gradient(135deg,var(--accent),#ff9f43); display:flex; align-items:center; justify-content:center; color:white; font-weight:bold; font-size:1.4rem; box-shadow:0 4px 15px rgba(253,126,20,0.4) }
+
+.page-section{ display:none; animation:fadeIn 0.5s ease }
+.page-section.active{ display:block }
+@keyframes fadeIn{ from{ opacity:0; transform:translateY(20px) } to{ opacity:1; transform:translateY(0) } }
+
+.dashboard-grid{ display:grid; grid-template-columns: repeat(auto-fit, minmax(300px,1fr)); gap:2rem; margin-bottom:3rem }
+.stat-card{ background:var(--bg-card); border-radius:24px; padding:2.5rem; text-align:center; transition:all 0.4s; border:1px solid var(--border) }
+.stat-card:hover{ transform:translateY(-12px); box-shadow:0 20px 50px var(--shadow) }
+.stat-icon{ font-size:3.5rem; margin-bottom:1.5rem; background:linear-gradient(135deg,var(--accent),#ff9f43); -webkit-background-clip:text; -webkit-text-fill-color:transparent }
+.stat-value{ font-size:3rem; font-weight:800; color:var(--text-primary); margin:0.5rem 0 }
+.stat-label{ color:var(--text-secondary); font-size:1.1rem; font-weight:500 }
+
+.products-header{ display:flex; justify-content:space-between; align-items:center; margin-bottom:2rem }
+.btn-add-product, .btn-add-category, .btn-restock-items{ background:linear-gradient(135deg,var(--accent),#ff9f43); color:white; padding:1rem 2rem; border-radius:50px; font-size:1.1rem; box-shadow:0 8px 25px rgba(253,126,20,0.4) }
+.products-search{ flex:1; max-width:400px; position:relative }
+.products-search input{ width:100%; padding:0.8rem 1rem 0.8rem 2.5rem; border:2px solid var(--border); border-radius:50px; background:var(--bg-card); color:var(--text-primary) }
+.products-search i{ position:absolute; left:0.8rem; top:50%; transform:translateY(-50%); color:var(--text-secondary) }
+
+.table-container{ background:var(--bg-card); border-radius:24px; overflow:hidden; box-shadow:0 12px 40px var(--shadow); border:1px solid var(--border) }
+.table-container table{ width:100%; border-collapse:collapse }
+.table-container th{ background:var(--table-header); padding:1.5rem; text-align:left; color:var(--text-primary); font-weight:600; font-size:1.05rem }
+.table-container td{ padding:1.5rem; border-bottom:1px solid var(--border) }
+
+.category-card{ background:var(--bg-card); border-radius:24px; overflow:hidden; box-shadow:0 12px 40px var(--shadow); transition:transform 0.4s; border:1px solid var(--border) }
+.category-card:hover{ transform:translateY(-12px) }
+.category-img{ height:200px; object-fit:cover; width:100% }
+.category-info{ padding:1.5rem; text-align:center }
+.category-name{ font-size:1.6rem; color:var(--text-primary); margin-bottom:0.5rem; font-weight:600 }
+.category-product-count{ color:var(--text-secondary); margin-bottom:1rem }
+
+.inventory-stat{ background:var(--bg-card); padding:1.5rem; border-radius:20px; text-align:center; box-shadow:0 8px 25px var(--shadow); border:1px solid var(--border) }
+
+.chart-card{ background:var(--bg-card); border-radius:24px; padding:2.5rem; box-shadow:0 12px 40px var(--shadow); border:1px solid var(--border) }
+.chart-title{ font-size:1.8rem; color:var(--text-primary); margin-bottom:2rem; text-align:center; font-weight:600 }
+
+.settings-section{ background:var(--bg-card); border-radius:24px; padding:3rem; box-shadow:0 12px 40px var(--shadow); margin-bottom:3rem; border:1px solid var(--border) }
+.settings-title{ font-size:2rem; color:var(--text-primary); margin-bottom:2rem; padding-bottom:1rem; border-bottom:3px solid var(--accent); font-weight:700 }
+
+.modal-overlay{ display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.75); backdrop-filter:blur(8px); z-index:3000; align-items:center; justify-content:center; padding:1rem }
+.modal-overlay.show{ display:flex }
+.modal-content{ background:var(--bg-card); border-radius:24px; max-width:900px; width:100%; max-height:95vh; overflow-y:auto; box-shadow:0 30px 80px var(--shadow); padding:3rem; position:relative; border:1px solid var(--border) }
+
+/* Responsive tweaks */
+@media (max-width: 1200px) { .analytics-grid { grid-template-columns: 1fr; } }
+@media (max-width: 992px) { .sidebar { width:80px } .sidebar-header .logo, .menu-item span { display:none } .main-content { margin-left:80px; width: calc(100% - 80px) } }
+@media (max-width: 768px) { .sidebar { position:fixed; left:-280px; transition:left 0.3s ease } .sidebar.open { left:0 } .main-content { margin-left:0; width:100%; padding:1.5rem } .form-grid { grid-template-columns:1fr } .dashboard-grid { grid-template-columns:1fr } }
+
+/* Dark mode variables override */
+body.dark-mode.admin {
+	--bg-primary: #0f172a;
+	--bg-card: #1e293b;
+	--bg-sidebar: #020617;
+	--text-primary: #f1f5f9;
+	--text-secondary: #94a3b8;
+	--border: #334155;
+	--shadow: rgba(0,0,0,0.3);
+	--topbar-bg: rgba(30,41,59,0.9);
+	--table-header: #334155;
+	--table-hover: rgba(51,65,85,0.5);
+	--accent: #fd7e14;
+}
+
+/* Dark mode toggle switch visuals */
+.toggle-switch { position: relative; width: 50px; height: 26px; background: #cbd5e1; border-radius: 50px; transition: background 0.3s; }
+.toggle-switch::after { content: ''; position: absolute; width: 22px; height: 22px; border-radius: 50%; background: white; top: 2px; left: 2px; transition: transform 0.3s ease; }
+body.dark-mode .toggle-switch { background: var(--accent); }
+body.dark-mode .toggle-switch::after { transform: translateX(24px); }
+.toggle-icon { font-size: 1.2rem; transition: opacity 0.3s; }
+.toggle-icon.sun { opacity: 1; }
+.toggle-icon.moon { opacity: 0; position: absolute; }
+body.dark-mode .toggle-icon.sun { opacity: 0; }
+body.dark-mode .toggle-icon.moon { opacity: 1; }
+
+.topbar-controls { display:flex; align-items:center; gap:1rem }
+.btn-logout { background: transparent; border: 1px solid var(--border); padding: 0.6rem 1rem; border-radius: 999px; cursor: pointer; color: var(--text-primary); }
+.btn-logout:hover { transform: translateY(-2px); box-shadow: 0 8px 20px var(--shadow); }

@@ -1,13 +1,55 @@
-import { Routes, Route, NavLink, Navigate } from 'react-router-dom'
+import { Routes, Route, NavLink, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext.jsx'
 import AdminHome from './AdminHome.jsx'
 import AdminProducts from './AdminProducts.jsx'
 import AdminOrders from './AdminOrders.jsx'
-import { LayoutDashboard, Package, ShoppingBag } from 'lucide-react'
-import { motion } from 'framer-motion'
+import AdminCategories from './AdminCategories.jsx'
+import AdminInventory from './AdminInventory.jsx'
+import AdminSettings from './AdminSettings.jsx'
+import '../../admin/admin.css'
+import { useEffect, useState } from 'react'
 
 export default function AdminDashboard() {
-  const { user, isAdmin } = useAuth()
+  const { user, isAdmin, logout } = useAuth()
+
+  useEffect(() => {
+    document.body.classList.add('admin')
+    return () => document.body.classList.remove('admin')
+  }, [])
+
+  const location = useLocation()
+  const navigate = useNavigate()
+  const [dark, setDark] = useState(() => !!localStorage.getItem('adminDarkMode'))
+
+  useEffect(() => {
+    if (localStorage.getItem('adminDarkMode') === 'enabled') {
+      document.body.classList.add('dark-mode')
+    }
+  }, [])
+
+  function toggleDark() {
+    const now = !document.body.classList.contains('dark-mode')
+    if (now) {
+      document.body.classList.add('dark-mode')
+      localStorage.setItem('adminDarkMode', 'enabled')
+    } else {
+      document.body.classList.remove('dark-mode')
+      localStorage.setItem('adminDarkMode', 'disabled')
+    }
+    setDark(now)
+  }
+
+  function pageTitleFromPath(path) {
+    if (path === '/admin' || path === '/admin/') return 'Dashboard Overview'
+    if (path.startsWith('/admin/products')) return 'Products Management'
+    if (path.startsWith('/admin/categories')) return 'Categories Management'
+    if (path.startsWith('/admin/inventory')) return 'Inventory Management'
+    if (path.startsWith('/admin/orders')) return 'Orders'
+    if (path.startsWith('/admin/settings')) return 'Settings'
+    return 'Admin'
+  }
+
+  const title = pageTitleFromPath(location.pathname)
 
   if (!user || !isAdmin) {
     return (
@@ -18,64 +60,70 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto">
-      <h1 className="heading-secondary mb-8">Admin Dashboard</h1>
-      
-      <div className="grid md:grid-cols-4 gap-8">
-        <aside className="md:col-span-1">
-          <nav className="bg-white border-2 border-neutral-200 p-4 space-y-2 sticky top-20">
-            <NavLink
-              to="/admin"
-              end
-              className={({ isActive }) =>
-                `flex items-center gap-3 px-4 py-3 font-semibold uppercase tracking-wide text-sm transition ${
-                  isActive
-                    ? 'bg-primary text-white'
-                    : 'hover:bg-neutral-100 text-neutral-700'
-                }`
-              }
-            >
-              <LayoutDashboard size={18} />
-              Dashboard
-            </NavLink>
-            <NavLink
-              to="/admin/products"
-              className={({ isActive }) =>
-                `flex items-center gap-3 px-4 py-3 font-semibold uppercase tracking-wide text-sm transition ${
-                  isActive
-                    ? 'bg-primary text-white'
-                    : 'hover:bg-neutral-100 text-neutral-700'
-                }`
-              }
-            >
-              <Package size={18} />
-              Products
-            </NavLink>
-            <NavLink
-              to="/admin/orders"
-              className={({ isActive }) =>
-                `flex items-center gap-3 px-4 py-3 font-semibold uppercase tracking-wide text-sm transition ${
-                  isActive
-                    ? 'bg-primary text-white'
-                    : 'hover:bg-neutral-100 text-neutral-700'
-                }`
-              }
-            >
-              <ShoppingBag size={18} />
-              Orders
-            </NavLink>
-          </nav>
-        </aside>
+    <div className="admin-wrapper">
+      <aside className="sidebar" role="navigation" aria-label="Admin sidebar">
+        <div className="sidebar-header">
+          <div className="logo">ProPlumb</div>
+        </div>
+        <nav className="sidebar-menu">
+          <NavLink to="/admin" end className={({isActive}) => `menu-item ${isActive ? 'active' : ''}`}>
+            <i className="fas fa-home"></i>
+            <span>Dashboard</span>
+          </NavLink>
 
-        <main className="md:col-span-3">
-          <Routes>
-            <Route index element={<AdminHome />} />
-            <Route path="products/*" element={<AdminProducts />} />
-            <Route path="orders" element={<AdminOrders />} />
-            <Route path="*" element={<Navigate to="/admin" replace />} />
-          </Routes>
-        </main>
-      </div>
+          <NavLink to="/admin/products" className={({isActive}) => `menu-item ${isActive ? 'active' : ''}`}>
+            <i className="fas fa-box"></i>
+            <span>Products</span>
+          </NavLink>
+
+          <NavLink to="/admin/categories" className={({isActive}) => `menu-item ${isActive ? 'active' : ''}`}>
+            <i className="fas fa-folder"></i>
+            <span>Categories</span>
+          </NavLink>
+
+          <NavLink to="/admin/inventory" className={({isActive}) => `menu-item ${isActive ? 'active' : ''}`}>
+            <i className="fas fa-warehouse"></i>
+            <span>Inventory</span>
+          </NavLink>
+
+          <NavLink to="/admin/orders" className={({isActive}) => `menu-item ${isActive ? 'active' : ''}`}>
+            <i className="fas fa-chart-line"></i>
+            <span>Orders</span>
+          </NavLink>
+
+          <NavLink to="/admin/settings" className={({isActive}) => `menu-item ${isActive ? 'active' : ''}`}>
+            <i className="fas fa-cog"></i>
+            <span>Settings</span>
+          </NavLink>
+        </nav>
+      </aside>
+
+      <main className="main-content">
+        <div className="topbar">
+          <h1>{title}</h1>
+          <div className="topbar-controls">
+            <div className="dark-mode-toggle" role="button" aria-pressed={dark} onClick={toggleDark}>
+              <i className="fas fa-sun toggle-icon sun" aria-hidden></i>
+              <i className="fas fa-moon toggle-icon moon" aria-hidden></i>
+              <div className="toggle-switch" />
+            </div>
+            <div className="user-info">
+              <span style={{fontWeight:600}}>Welcome back, {user?.name?.split(' ')[0] || 'Admin'}</span>
+              <div className="user-avatar">{(user?.name || 'A')[0]}</div>
+              <button className="btn-logout" onClick={() => { logout(); navigate('/login') }}>Logout</button>
+            </div>
+          </div>
+        </div>
+        <Routes>
+          <Route index element={<AdminHome />} />
+          <Route path="products/*" element={<AdminProducts />} />
+          <Route path="orders" element={<AdminOrders />} />
+          <Route path="categories" element={<AdminCategories />} />
+          <Route path="inventory" element={<AdminInventory />} />
+          <Route path="settings" element={<AdminSettings />} />
+          <Route path="*" element={<Navigate to="/admin" replace />} />
+        </Routes>
+      </main>
     </div>
   )
 }

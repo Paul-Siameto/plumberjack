@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { AuthProvider } from './context/AuthContext.jsx'
@@ -17,6 +17,9 @@ import LoginPage from './pages/LoginPage.jsx'
 import RegisterPage from './pages/RegisterPage.jsx'
 
 export default function App() {
+  const location = useLocation()
+  const isAdminRoute = location.pathname.startsWith('/admin')
+
   const [dark, setDark] = useState(() => {
     const saved = localStorage.getItem('darkMode')
     return saved === 'true'
@@ -31,24 +34,33 @@ export default function App() {
     <AuthProvider>
       <CartProvider>
         <ToastProvider>
-        <div className="min-h-screen flex flex-col bg-white text-neutral-900">
-          <Navbar dark={dark} setDark={setDark} />
-          <motion.main className="flex-1 container-custom py-8 md:py-12" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/product/:id" element={<ProductPage />} />
-              <Route path="/shop" element={<ShopPage />} />
-              <Route path="/cart" element={<CartPage />} />
-              <Route path="/checkout" element={<CheckoutPage />} />
-              <Route path="/profile" element={<ProfilePage />} />
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/register" element={<RegisterPage />} />
-              <Route path="/admin/*" element={<AdminDashboard />} />
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-          </motion.main>
-          <Footer />
-        </div>
+          {isAdminRoute ? (
+            // Render admin dashboard without global Navbar/Footer so admin CSS/layout matches standalone mock
+            <div className="min-h-screen bg-white text-neutral-900">
+              <Routes>
+                <Route path="/admin/*" element={<AdminDashboard />} />
+                <Route path="*" element={<Navigate to="/admin" replace />} />
+              </Routes>
+            </div>
+          ) : (
+            <div className="min-h-screen flex flex-col bg-white text-neutral-900">
+              <Navbar dark={dark} setDark={setDark} />
+              <motion.main className="flex-1 container-custom py-8 md:py-12" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
+                <Routes>
+                  <Route path="/" element={<HomePage />} />
+                  <Route path="/product/:id" element={<ProductPage />} />
+                  <Route path="/shop" element={<ShopPage />} />
+                  <Route path="/cart" element={<CartPage />} />
+                  <Route path="/checkout" element={<CheckoutPage />} />
+                  <Route path="/profile" element={<ProfilePage />} />
+                  <Route path="/login" element={<LoginPage />} />
+                  <Route path="/register" element={<RegisterPage />} />
+                  <Route path="*" element={<Navigate to="/" replace />} />
+                </Routes>
+              </motion.main>
+              <Footer />
+            </div>
+          )}
         </ToastProvider>
       </CartProvider>
     </AuthProvider>
